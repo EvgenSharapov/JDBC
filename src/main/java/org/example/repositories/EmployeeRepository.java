@@ -2,20 +2,29 @@ package org.example.repositories;
 
 import org.example.entity.Employee;
 import org.example.repositories.statements.SaveEmployeePreparedStatementCallBack;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import static org.example.repositories.queries.EmployeeQueries.DELETE_BY_ID;
-import static org.example.repositories.queries.EmployeeQueries.SAVE_EMPLOYEE;
+import java.util.List;
+
+import static org.example.repositories.queries.EmployeeQueries.*;
 
 @Repository
 public class EmployeeRepository implements CrudRepository<Employee>{
 
     private final JdbcTemplate jdbcTemplate;
+    //можно использовать @Qualifier если имя не совпадает с именем бина.
+    private final ResultSetExtractor<Employee> employeeResultSetExtractor;
+    private final RowMapper<Employee>employeeRowMapper;
 
-    public EmployeeRepository(JdbcTemplate jdbcTemplate) {
+    public EmployeeRepository(JdbcTemplate jdbcTemplate, ResultSetExtractor<Employee> employeeResultSetExtractor, RowMapper<Employee> employeeRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.employeeResultSetExtractor = employeeResultSetExtractor;
+        this.employeeRowMapper = employeeRowMapper;
     }
 
     //public int update(String query)
@@ -56,5 +65,45 @@ public class EmployeeRepository implements CrudRepository<Employee>{
             return ps.getUpdateCount();
 
         });
+    }
+
+    @Override
+    public Employee getFirstWithResultSetExtractor() {
+        return jdbcTemplate.query(FIND_FIRST_EMPLOYEE,employeeResultSetExtractor);
+    }
+
+
+    // public T query(String sql, RowMapper<T> rm);
+
+    @Override
+    public List<Employee> findAll() {
+        return jdbcTemplate.query(FIND_ALL,employeeRowMapper);
+    }
+
+    @Override
+    public Employee findById(Long id) {
+        List<Employee> queryResult = jdbcTemplate.query(FIND_BY_ID, employeeRowMapper, id);
+        return queryResult.getFirst();
+    }
+
+
+
+    // public int update(String sql,@Nullable object...args)
+
+    @Override
+    public int save(Employee employee) {
+        return jdbcTemplate.update(SAVE_EMPLOYEE,
+                employee.getId(),
+                employee.getName(),
+                employee.getOccupation(),
+                employee.getSalary(),
+                employee.getAge(),
+                employee.getJoinDate()
+        );
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        return jdbcTemplate.update(DELETE_BY_ID,id);
     }
 }

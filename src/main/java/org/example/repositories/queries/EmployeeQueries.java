@@ -15,4 +15,20 @@ public class EmployeeQueries {
             
             """;
 
+    public static final String FIND_FIRST_EMPLOYEE = """
+            SELECT *
+            FROM employee AS e
+                WHERE e.id = 1;
+            """;
+
+    public static final String FIND_ALL = """
+            SELECT *
+            FROM employee;
+            """;
+
+    public static final String FIND_BY_ID = """
+            SELECT *
+            FROM employee AS e
+                WHERE e.id = ?;
+            """;
 }

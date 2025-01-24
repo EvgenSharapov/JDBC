@@ -36,4 +36,39 @@ public class EmployeeService {
         return employeeRepository.deleteByPrepareStatement(e);
     }
 
+    public Employee getFirstWithResultSetExtractor(){
+    return employeeRepository.getFirstWithResultSetExtractor();
+
+    }
+
+    // public T query(String sql, RowMapper<T> rm);
+
+    public void displayEmployees(){
+        employeeRepository.findAll().forEach(System.out::println);
+    }
+
+    public void displayEmployeesById(Long id){
+        System.out.println(employeeRepository.findById(id));
+    }
+
+    // public int update(String sql,@Nullable object...args)
+
+    public void saveEmployee(Employee employee){
+        int modifiedRows = employeeRepository.save(employee);
+        if(modifiedRows != 0){
+            System.out.println("Save operation executed successfully");
+        }
+
+    }
+
+    public void deleteEmployeeById(Long id){
+        int modifiedRows = employeeRepository.deleteById(id);
+
+        if(modifiedRows != 0){
+            System.out.println("Delete operation executed successfully");
+        }
+
+    }
+
+
 }

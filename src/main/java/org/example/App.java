@@ -23,11 +23,16 @@ public class App {
         Employee employee= createEmployee(id);
 
         //demos
-        updateDemo(employeeService,employee);
+        //updateDemo(employeeService,employee);
         //executeWithPrepareStatementDemo(employeeService,employee);
+        //queryWithResultSetExtractorDemo(employeeService);
+        //queryWithRowMapperDemo(employeeService);
+        updateWithArgsDemo(employeeService,id,employee);
 
 
     }
+
+
 
 
     private static void updateDemo(EmployeeService employeeService, Employee employee) {
@@ -58,6 +63,34 @@ public class App {
 
     }
 
+    private static void queryWithResultSetExtractorDemo(EmployeeService employeeService) {
+        System.out.println("queryWithResultSetExtractorDemo");
+        Employee employee = employeeService.getFirstWithResultSetExtractor();
+        System.out.println(employee);
+        System.out.println();
+    }
+
+    private static void queryWithRowMapperDemo(EmployeeService employeeService) {
+        System.out.println("queryWithRowMapperDemo");
+
+        System.out.println("Employees: ");
+        employeeService.displayEmployees();
+
+        System.out.println("Employee with id 1: ");
+        employeeService.displayEmployeesById(1L);
+
+
+    }
+
+    private static void updateWithArgsDemo(EmployeeService employeeService, Long id, Employee employee) {
+
+        System.out.println("updateWithArgsDemo");
+        //save
+        employeeService.saveEmployee(employee);
+
+        System.out.println("Employee by id: "+ id);
+        employeeService.deleteEmployeeById(id);
+    }
 
     private static Employee createEmployee(Long id) {
         return new Employee()
